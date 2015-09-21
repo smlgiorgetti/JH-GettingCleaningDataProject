@@ -9,7 +9,6 @@ zipLocalFile <- paste(".", "UCI-HAR-Dataset.zip", sep = "/")
 if(!file.exists(zipLocalFile)) { download.file(urlFile, zipLocalFile, method = "curl") }
 if(!file.exists("UCI HAR Dataset")) { unzip(zipLocalFile, exdir = ".") }
 
-
 # read raw features from file
 features <- read.csv("./UCI HAR Dataset/features.txt", sep = " ", header = FALSE)[,2]
 # read activity labels from file
@@ -26,27 +25,28 @@ activityIDs <- rbind.data.frame(activityIDs, read.csv("./UCI HAR Dataset/test/y_
 allData <- rbind(train, test)
 allData <- cbind.data.frame(allData, subjectIDs, activityIDs)
 
-features <- append(as.character(features), c("Subject", "activityID"))
+features <- append(as.character(features), c("SubjectID", "activityID"))
 colnames(allData) <- features
 
 allData <- merge(allData, activityLabels, by = "activityID")
+
+# select features
+filteredFeatures <- grep('-mean|-std|Subj|Name', names(allData))
 
 # clean labels
 featuresNames <- names(allData)
 featuresNames <- gsub('-mean', 'Mean', featuresNames)
 featuresNames <- gsub('-std', 'Std', featuresNames)
+featuresNames <- gsub('BodyBody', 'Body', featuresNames)
 featuresNames <- gsub('[-()]', '', featuresNames)
 colnames(allData) <- featuresNames
-
-# select features
-filteredFeatures <- grep('-mean|-std|Subj|Name', names(allData))
 
 # filter unwanted features out
 allData <- allData[,filteredFeatures]
 
 # creates a second, independent tidy data set with the average of each variable
 # for each activity and each subject.
-tidyData <- allData %>% group_by(Subject, ActivityName) %>% summarise_each(funs(mean))
+tidyData <- allData %>% group_by(SubjectID, ActivityName) %>% summarise_each(funs(mean))
 
 #write out
 write.table(tidyData, "./tidyData.txt", sep="\t", row.names = FALSE)
