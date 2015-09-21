@@ -1,15 +1,14 @@
 library("dplyr")
 
-# INIT section
 urlFile <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 
-downloadDir <- paste(getwd(), "data", sep = "/")
-if(!file.exists(downloadDir)) { dir.create("downloadDir")}
+#downloadDir <- paste(getwd(), "data", sep = "/")
+#if(!file.exists(downloadDir)) { dir.create("data")}
 
-zipLocalFile <- filePath(downloadDir, "UCI-HAR-Dataset.zip")
-if(!file.exists(zipFile)) { download.file(urlFile, zipLocalFile, method = "curl") }
+zipLocalFile <- paste(".", "UCI-HAR-Dataset.zip", sep = "/")
+if(!file.exists(zipLocalFile)) { download.file(urlFile, zipLocalFile, method = "curl") }
 if(!file.exists("UCI HAR Dataset")) { unzip(zipLocalFile, exdir = ".") }
-# end INIT section
+
 
 # read raw features from file
 features <- read.csv("./UCI HAR Dataset/features.txt", sep = " ", header = FALSE)[,2]
@@ -31,6 +30,13 @@ features <- append(as.character(features), c("Subject", "activityID"))
 colnames(allData) <- features
 
 allData <- merge(allData, activityLabels, by = "activityID")
+
+# clean labels
+featuresNames <- names(allData)
+featuresNames <- gsub('-mean', 'Mean', featuresNames)
+featuresNames <- gsub('-std', 'Std', featuresNames)
+featuresNames <- gsub('[-()]', '', featuresNames)
+colnames(allData) <- featuresNames
 
 # select features
 filteredFeatures <- grep('-mean|-std|Subj|Name', names(allData))
