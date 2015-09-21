@@ -10,6 +10,6 @@ The script *run_analysis.R* downloads data from Human Activity Recognition datab
 
 #### Overall Workflow
 The script looks for a local file named *UCI-HAR-Dataset.zip* in the working directory.
-If such a file does not exist, it downloads it from [link](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip)
+If such a file does not exist, it downloads it from [link](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip).
 The archive is unzipped, files read and analysed.
 Finally, analysis outcome - i.e. the average of each variable for each activity and each subject - is written in a plain text, TAB-separated file "tidyData.txt" in the working directory.
