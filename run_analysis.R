@@ -1,3 +1,16 @@
+library("dplyr")
+
+# INIT section
+urlFile <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
+
+downloadDir <- paste(getwd(), "data", sep = "/")
+if(!file.exists(downloadDir)) { dir.create("downloadDir")}
+
+zipLocalFile <- filePath(downloadDir, "UCI-HAR-Dataset.zip")
+if(!file.exists(zipFile)) { download.file(urlFile, zipLocalFile, method = "curl") }
+if(!file.exists("UCI HAR Dataset")) { unzip(zipLocalFile, exdir = ".") }
+# end INIT section
+
 # read raw features from file
 features <- read.csv("./UCI HAR Dataset/features.txt", sep = " ", header = FALSE)[,2]
 # read activity labels from file
